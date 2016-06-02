@@ -1,9 +1,9 @@
 {
-    "name": "fetch-stream",
+    "name": "kefir-fetch",
     "version": "0.1.0",
     "repository": {
         "type": "git",
-        "url": "http://github.com/prontotype-us/fetch-stream.git"
+        "url": "http://github.com/prontotype-us/kefir-fetch"
     },
     "main": "lib/index.js",
     "scripts": {
