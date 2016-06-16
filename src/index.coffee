@@ -53,12 +53,12 @@ fetch$ = (method, url, options={}) ->
 	# Build fetch options
     options.method = method
 
-    if options.query?
-        url += makeQueryString options.query
+    if query = options.query
+        url += makeQueryString query
         delete options.query
 
-    if options.body?
-        options.body = JSON.stringify options.body
+    if body = options.body
+        options.body = JSON.stringify body
 
     options = defaults options, default_options
 
@@ -75,6 +75,7 @@ fetch$ = (method, url, options={}) ->
         # Parse an error response
         else
             res.text().then (json_string) ->
+
                 if !json_string.length
                     return "Error #{res.status} with no response"
 
@@ -87,6 +88,7 @@ fetch$ = (method, url, options={}) ->
 
 			# Turn into an error
             .then (response) ->
+                Object.assign response, {method, url, query, body}
                 Promise.reject response
 
     # Optionally wrap in promise helper
