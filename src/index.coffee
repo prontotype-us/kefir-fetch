@@ -24,6 +24,7 @@ timeoutPromise = (p, ms) ->
             clearTimeout timeout_timeout
             resolve(res)
         clear_rej = (rej) ->
+            console.log 'rejected'
             clearTimeout timeout_timeout
             reject(rej)
         p.then clear_res, clear_rej
@@ -49,8 +50,8 @@ default_options =
 #     * "Content-Type": "application/json"
 
 fetch$ = (method, url, options={}) ->
-	
-	# Build fetch options
+
+    # Build fetch options
     options.method = method
 
     if query = options.query
@@ -62,7 +63,7 @@ fetch$ = (method, url, options={}) ->
 
     options = defaults options, default_options
 
-	# fetch request as a promise
+    # fetch request as a promise
     fetch_promise = fetch(url, options).then (res) ->
 
         # Parse a good response
@@ -75,6 +76,7 @@ fetch$ = (method, url, options={}) ->
         # Parse an error response
         else
             res.text().then (json_string) ->
+                console.log "JSON string is", json_string
 
                 if !json_string.length
                     return "Error #{res.status} with no response"
@@ -84,9 +86,9 @@ fetch$ = (method, url, options={}) ->
                     return json
 
                 catch e
-                    return json_string
+                    return {error: json_string}
 
-			# Turn into an error
+            # Turn into an error
             .then (response) ->
                 Object.assign response, {method, url, query, body}
                 Promise.reject response
@@ -95,7 +97,7 @@ fetch$ = (method, url, options={}) ->
     if timeout = options.timeout
         fetch_promise = timeoutPromise fetch_promise, timeout
 
-	# Return fetch request as stream
+    # Return fetch request as stream
     Kefir.fromPromise fetch_promise
 
 module.exports = fetch$
