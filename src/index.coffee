@@ -15,16 +15,18 @@ makeQueryString = (query) ->
             s += k + "=" + v + "&"
     return s
 
-timeoutPromise = (p, ms) ->
+timeoutPromise = (context, p, ms) ->
     new Promise (resolve, reject) ->
         timeout_timeout = setTimeout ->
-            reject("Request timed out")
+            response = {error: "Request timed out"}
+            Object.assign response, context
+            reject response
         , ms
+
         clear_res = (res) ->
             clearTimeout timeout_timeout
             resolve(res)
         clear_rej = (rej) ->
-            console.log 'rejected'
             clearTimeout timeout_timeout
             reject(rej)
         p.then clear_res, clear_rej
@@ -62,6 +64,7 @@ fetch$ = (method, url, options={}) ->
         options.body = JSON.stringify body
 
     options = defaults options, default_options
+    context = {method, url, query, body}
 
     # fetch request as a promise
     fetch_promise = fetch(url, options).then (res) ->
@@ -76,7 +79,6 @@ fetch$ = (method, url, options={}) ->
         # Parse an error response
         else
             res.text().then (json_string) ->
-                console.log "JSON string is", json_string
 
                 if !json_string.length
                     return "Error #{res.status} with no response"
@@ -90,12 +92,12 @@ fetch$ = (method, url, options={}) ->
 
             # Turn into an error
             .then (response) ->
-                Object.assign response, {method, url, query, body}
+                Object.assign response, context
                 Promise.reject response
 
     # Optionally wrap in promise helper
     if timeout = options.timeout
-        fetch_promise = timeoutPromise fetch_promise, timeout
+        fetch_promise = timeoutPromise context, fetch_promise, timeout
 
     # Return fetch request as stream
     Kefir.fromPromise fetch_promise
