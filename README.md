@@ -19,6 +19,13 @@ The optional `options` argument may include:
 * `headers`: Override HTTP headers, which by default are:
     * `"Accept": "application/json"`
     * `"Content-Type": "application/json"`
+* `base_url`: Base URL to prepend path to, useful for non-web apps
+
+### Default options
+
+`fetch$.setDefaultOptions(options)`
+
+To override the default options for all requests, use `setDefaultOptions`.
 
 ## Examples
 
