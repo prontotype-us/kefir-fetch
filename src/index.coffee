@@ -4,8 +4,11 @@ Kefir = require 'kefir'
 
 deepExtend = (o1, o2) ->
     for k, v of o2
-        if v1 = o1[k] and typeof v1 == 'object' and typeof v == 'object'
-            o1[k] = deepExtend v1, v
+        if v1 = o1[k]
+            if typeof v1 == 'object' and typeof v == 'object'
+                o1[k] = deepExtend v1, v
+            else
+                o1[k] = v
         else
             o1[k] = v
     return o1
@@ -39,14 +42,6 @@ timeoutPromise = (context, p, ms) ->
             reject(rej)
         p.then clear_res, clear_rej
 
-# Options
-
-default_options =
-    headers:
-        'Accept': 'application/json'
-        'Content-Type': 'application/json'
-    credentials: 'same-origin'
-
 # ## Usage
 # 
 # fetch$(method, path, options?)
@@ -71,11 +66,12 @@ fetch$ = (method, url, options={}) ->
     if body = options.body
         options.body = JSON.stringify body
 
-    options = defaults options, default_options
+    options = defaults options, fetch$.default_options
     context = {method, url, query, body}
 
     if base_url = options.base_url
-        url = base_url + url
+        if !(url.match /^https?:/)
+            url = base_url + url
 
     # fetch request as a promise
     fetch_promise = fetch(url, options).then (res) ->
@@ -113,7 +109,15 @@ fetch$ = (method, url, options={}) ->
     # Return fetch request as stream
     Kefir.fromPromise fetch_promise
 
+# Options
+
+fetch$.default_options =
+    headers:
+        'Accept': 'application/json'
+        'Content-Type': 'application/json'
+    credentials: 'same-origin'
+
 fetch$.setDefaultOptions = (options) ->
-    defaults default_options, defaults
+    deepExtend fetch$.default_options, options
 
 module.exports = fetch$
