@@ -2,6 +2,14 @@ Kefir = require 'kefir'
 
 # Helpers
 
+deepExtend = (o1, o2) ->
+    for k, v of o2
+        if v1 = o1[k] and typeof v1 == 'object' and typeof v == 'object'
+            o1[k] = deepExtend v1, v
+        else
+            o1[k] = v
+    return o1
+
 defaults = (o1, o2) ->
     for k, v of o2
         if !o1[k]?
@@ -66,6 +74,9 @@ fetch$ = (method, url, options={}) ->
     options = defaults options, default_options
     context = {method, url, query, body}
 
+    if base_url = options.base_url
+        url = base_url + url
+
     # fetch request as a promise
     fetch_promise = fetch(url, options).then (res) ->
 
@@ -101,5 +112,8 @@ fetch$ = (method, url, options={}) ->
 
     # Return fetch request as stream
     Kefir.fromPromise fetch_promise
+
+fetch$.setDefaultOptions = (options) ->
+    defaults default_options, defaults
 
 module.exports = fetch$
