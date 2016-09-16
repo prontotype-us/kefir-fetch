@@ -13,12 +13,6 @@ deepExtend = (o1, o2) ->
             o1[k] = v
     return o1
 
-defaults = (o1, o2) ->
-    for k, v of o2
-        if !o1[k]?
-            o1[k] = v
-    return o1
-
 makeQueryString = (query) ->
     s = "?"
     for k, v of query
@@ -66,7 +60,10 @@ fetch$ = (method, url, options={}) ->
     if body = options.body
         options.body = JSON.stringify body
 
-    options = defaults options, fetch$.default_options
+    _options = deepExtend {}, fetch$.default_options
+    _options = deepExtend _options, options
+    options = _options
+
     context = {method, url, query, body}
 
     if base_url = options.base_url
@@ -79,9 +76,12 @@ fetch$ = (method, url, options={}) ->
         # Parse a good response
         # TODO: Handle non-json responses
         if res.status == 200
-            res.json()
-                .catch (err) ->
-                    Promise.reject("Could not parse response")
+            if options.headers['Accept'] == 'application/json'
+                res.json()
+                    .catch (err) ->
+                        Promise.reject("Could not parse response")
+            else
+                return res.text()
 
         # Parse an error response
         else
