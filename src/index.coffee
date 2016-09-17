@@ -1,4 +1,4 @@
-fetch = require 'whatwg-fetch'
+require 'whatwg-fetch'
 Kefir = require 'kefir'
 
 # Helpers
