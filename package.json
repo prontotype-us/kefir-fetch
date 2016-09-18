@@ -1,6 +1,6 @@
 {
     "name": "kefir-fetch",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "repository": {
         "type": "git",
         "url": "http://github.com/prontotype-us/kefir-fetch"
@@ -10,6 +10,7 @@
         "build": "cjsx --bare -o lib -c src"
     },
     "dependencies": {
+        "deep-extend": "0.4.x",
         "kefir": "3.2.x",
         "whatwg-fetch": "1.0.0"
     },

@@ -1,18 +1,8 @@
 require 'whatwg-fetch'
+deepExtend = require 'deep-extend'
 Kefir = require 'kefir'
 
 # Helpers
-
-deepExtend = (o1, o2) ->
-    for k, v of o2
-        if v1 = o1[k]
-            if typeof v1 == 'object' and typeof v == 'object'
-                o1[k] = deepExtend v1, v
-            else
-                o1[k] = v
-        else
-            o1[k] = v
-    return o1
 
 makeQueryString = (query) ->
     s = "?"
@@ -61,8 +51,7 @@ fetch$ = (method, url, options={}) ->
     if body = options.body
         options.body = JSON.stringify body
 
-    _options = deepExtend {}, fetch$.default_options
-    _options = deepExtend _options, options
+    _options = deepExtend {}, fetch$.default_options, options
     options = _options
 
     context = {method, url, query, body}
