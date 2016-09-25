@@ -1,4 +1,5 @@
-require 'whatwg-fetch'
+if !fetch?
+    require 'whatwg-fetch'
 deepExtend = require 'deep-extend'
 Kefir = require 'kefir'
 
