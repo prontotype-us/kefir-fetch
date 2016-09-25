@@ -10,6 +10,7 @@
         "build": "cjsx --bare -o lib -c src"
     },
     "dependencies": {
+        "buffer": "4.9.x",
         "deep-extend": "0.4.x",
         "kefir": "3.2.x",
         "whatwg-fetch": "1.0.0"

@@ -1,5 +1,5 @@
-if !fetch?
-    require 'whatwg-fetch'
+require 'whatwg-fetch'
+window?.Buffer ||= require('buffer').Buffer
 deepExtend = require 'deep-extend'
 Kefir = require 'kefir'
 
