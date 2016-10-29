@@ -52,8 +52,18 @@ fetch$ = (method, url, options={}) ->
     if body = options.body
         options.body = JSON.stringify body
 
-    _options = deepExtend {}, fetch$.default_options, options
-    options = _options
+    if file = options.file
+        post_data = new FormData()
+        post_data.append 'upload_data', file
+        options.body = post_data
+
+        # Dont set the headers like w/ other requests
+        # as this messes w/ the FormData
+        options.credentials = 'same-origin'
+        delete options.file
+    else
+        _options = deepExtend {}, fetch$.default_options, options
+        options = _options
 
     context = {method, url, query, body}
 
