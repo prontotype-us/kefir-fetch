@@ -57,13 +57,13 @@ fetch$ = (method, url, options={}) ->
         post_data.append 'upload_data', file
         options.body = post_data
 
+        # Don't set the headers like other requests as this messes with the FormData
         options.headers = {
             'Accept': 'application/json'
         }
-        # Dont set the headers like w/ other requests
-        # as this messes w/ the FormData
         options.credentials = 'same-origin'
         delete options.file
+
     else
         _options = deepExtend {}, fetch$.default_options, options
         options = _options
