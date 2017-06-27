@@ -58,7 +58,7 @@ fetch$ = (method, url, options={}) ->
         options.body = post_data
 
         # Don't set the headers like other requests as this messes with the FormData
-        options.headers = {
+        Object.assign options.headers, {
             'Accept': 'application/json'
         }
         options.credentials = 'same-origin'
