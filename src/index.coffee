@@ -56,6 +56,7 @@ fetch$ = (method, url, options={}) ->
         post_data = new FormData()
         post_data.append 'upload_data', file
         options.body = post_data
+        options.headers ||= {}
 
         # Don't set the headers like other requests as this messes with the FormData
         Object.assign options.headers, {
